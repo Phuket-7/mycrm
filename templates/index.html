@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7/css/bootstrap.css">
+    <script src="/static/jquery-3.2.1.js"></script>
+    <script src="/static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        .hides{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+{#导航#}
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header" style="margin-right: 150px">
+            <a class="navbar-brand" href="/index/">CRM系统</a>
+        </div>
+        <div class="nav navbar-nav">
+            <ul class="nav navbar-nav">
+                <li><a href="/index/">平台首页</a></li>
+                <li><a href="/index/">资产首页</a></li>
+            </ul>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="">任务</a></li>
+            <li><a href="">通知</a></li>
+            <li><a href="">消息</a></li>
+        </ul>
+    </div>
+</nav>
+
+{#主体#}
+<div style="margin-top: 50px">
+{#    左侧菜单#}
+    <div class="col-md-2">
+        <div class="right_menu">权限管理</div>
+        <div class="right_menu">客户管理</div>
+        <div>
+            <div class="right_menu">校区管理</div>
+            <div class="right_menu_bn hides" style="margin-left: 20px">
+                <div><a href="">学校列表</a></div>
+                <div><a href="">课程列表</a></div>
+                <div><a href="">开班列表</a></div>
+                <div><a href="">学生列表</a></div>
+                <div><a href="">上课记录表</a></div>
+                <div><a href="">学生学习记录列表</a></div>
+                <div><a href="">调查问卷列表</a></div>
+            </div>
+        </div>
+        <div class="right_menu">员工管理</div>
+    </div>
+    <div class="col-md-10">
+        <div class="panel panel-default">
+            <div class="panel-heading"><a href="/index/">首页</a> / 数据列表</div>
+            <div class="panel-body">
+                <button type="button" class="btn btn-success">添加</button>
+                <table class="table table-bordered" style="margin-top: 15px">
+                    <tr>
+                        <th><input type="checkbox"></th>
+                        <th>调查问卷名称</th>
+                        <th>问卷调查班级</th>
+                        <th>参与人数</th>
+                        <th>问卷选项</th>
+                        <th>调查地址</th>
+                        <th>查看评分</th>
+                        <th>操作</th>
+                    </tr>
+                    {% for questionnaire in  questionnaire_list%}
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td><a href="">{{ questionnaire.title }}</a></td>
+                            <td>{{ questionnaire.cls.title }}</td>
+                            <td>{{ questionnaire.cls.student_set.count }}</td>
+                            <td><a href="/questionnaire_edit/{{ questionnaire.id }}">编辑问卷</a></td>
+                            <td></td>
+                            <td><a href="">查看评分</a></td>
+                            <td><a href="">删除</a></td>
+                        </tr>
+                    {% endfor %}
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(".right_menu").mouseover(function () {
+        $(this).next().slideDown(100)
+    }).parent().mouseleave(function () {
+        $(this).children(".right_menu_bn").slideUp(100)
+    })
+</script>
+</body>
+</html>
