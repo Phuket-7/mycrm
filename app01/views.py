@@ -20,6 +20,11 @@ def index(request) :
     return render(request,"index.html",{"questionnaire_list":questionnaire_list})
 
 # 编辑问卷
+from app01 import forms
 def questionnaire_edit(request,id) :
     question_list = models.Question.objects.filter(questionnaire__id=id)
-    return render(request,"questionnaire_edit.html",{"question_list":question_list})
+    from_list = []
+    for question in question_list :
+        obj = forms.QuestionNaire(initial={"caption":question.caption,"tp":question.tp})
+        from_list.append(obj)
+    return render(request,"questionnaire_edit.html",{"from_list":from_list})

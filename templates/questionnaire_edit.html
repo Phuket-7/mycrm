@@ -59,31 +59,34 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-md-2 col-md-offset-10">
-                        <button type="button" class="btn btn-success">添加</button>&nbsp;
+                        <button type="button" class="btn btn-success addBtn">添加</button>&nbsp;
                         <button type="button" class="btn btn-primary">保存</button>
                     </div>
                 </div>
-                {% for question in question_list %}
+                <div class="content">
+                {% for from_obj in from_list %}
                     <div class="row"  style="margin:0 auto">
                         <div class="row">
                             <div>问题{{ forloop.counter }}:</div>
                         </div>
                         <div class="row">
                             <div class="col-md-1 col-md-offset-1">问题：</div>
-                            <div class="col-md-9"><textarea name="" id="" cols="100" rows="2">{{ question.caption }}</textarea></div>
+                            <div class="col-md-8">{{ from_obj.caption }}</div>
+                            <div class="col-md-1">
+                                <button class="removeBtn"><span class="glyphicon glyphicon-remove"></span></button>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-md-1 col-md-offset-1">类型：</div>
                             <div class="col-md-9">
-                                <select name="" id="">
-                                    <option value="">{{ question.tp }}</option>
-                                    <option value="">{{ question.tp }}</option>
-                                    <option value="">{{ question.tp }}</option>
-                                </select>
+                                {{ from_obj.tp }}
                             </div>
                         </div>
                     </div>
                 {% endfor %}
+                </div>
+                <div class="newadd"></div>
+
             </div>
         </div>
     </div>
@@ -94,6 +97,16 @@
         $(this).next().slideDown(100)
     }).parent().mouseleave(function () {
         $(this).children(".right_menu_bn").slideUp(100)
+    });
+
+    $(".addBtn").click(function () {
+        alert(111);
+        str = '<div class="row" style="margin:0 auto"><div class="row"><div>问题:</div></div><div class="row"><div class="col-md-1 col-md-offset-1">问题：</div><div class="col-md-8"><textarea name="" id="" cols="100" rows="2"></textarea></div><div class="col-md-1"><span class="glyphicon glyphicon-remove"></span></div></div><div class="row"><div class="col-md-1 col-md-offset-1">类型：</div><div class="col-md-9">   </div></div></div>';
+        $(".newadd").append(str)
+    });
+    
+    $(".content").on("click",".removeBtn",function () {
+        $(".removeBtn").parent.parent.remove()
     })
 </script>
 </body>
