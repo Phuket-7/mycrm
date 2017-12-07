@@ -7,8 +7,33 @@
     <script src="/static/jquery-3.2.1.js"></script>
     <script src="/static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
     <style>
-        .hides{
+        .hide{
             display: none;
+        }
+        ol {
+            padding: 0;
+            list-style: none;
+            counter-reset: sectioncounter;
+        }
+
+        #id_caption {
+            height: 50px;
+            width: 600px;
+        }
+
+        ol > li > div {
+            padding-left: 100px;
+        }
+
+        ol > li:before {
+            content: '问题' counter(sectioncounter) ':';
+            counter-increment: sectioncounter;
+            font-size: 18px;
+            color: #d4d4d4;
+        }
+
+        ol > li:nth-of-type(odd) {
+            background-color: #f9f9f9;
         }
     </style>
 </head>
@@ -60,54 +85,123 @@
                 <div class="row">
                     <div class="col-md-2 col-md-offset-10">
                         <button type="button" class="btn btn-success addBtn">添加</button>&nbsp;
-                        <button type="button" class="btn btn-primary">保存</button>
+                        <button type="button" class="btn btn-primary saveBtn">保存</button>
                     </div>
                 </div>
-                <div class="content">
-                {% for from_obj in from_list %}
-                    <div class="row"  style="margin:0 auto">
-                        <div class="row">
-                            <div>问题{{ forloop.counter }}:</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-1 col-md-offset-1">问题：</div>
-                            <div class="col-md-8">{{ from_obj.caption }}</div>
-                            <div class="col-md-1">
-                                <button class="removeBtn"><span class="glyphicon glyphicon-remove"></span></button>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-1 col-md-offset-1">类型：</div>
-                            <div class="col-md-9">
-                                {{ from_obj.tp }}
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-                </div>
-                <div class="newadd"></div>
-
+{#                <div class="row content">#}
+{#                {% for from_obj in from_list %}#}
+{#                    <div class="row"  style="margin:0 auto">#}
+{#                        <div class="row">#}
+{#                            <div>问题{{ forloop.counter }}:</div>#}
+{#                        </div>#}
+{#                        <div class="row">#}
+{#                            <div class="col-md-1 col-md-offset-1">问题：</div>#}
+{#                            <div class="col-md-8">{{ from_obj.caption }}</div>#}
+{#                            <div class="col-md-1">#}
+{#                                <button class="removeBtn"><span class="glyphicon glyphicon-remove"></span></button>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                        <div class="row">#}
+{#                            <div class="col-md-1 col-md-offset-1">类型：</div>#}
+{#                            <div class="col-md-9">#}
+{#                                {{ from_obj.tp }}#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                {% endfor %}#}
+                    <ol class="row content">
+                        {% for item in form_list %}
+                            <li>
+                                <span class="glyphicon glyphicon-remove pull-right removeBtn"></span>
+                                <div pk="{{ item.obj.id }}">
+                                    <p>问题:{{ item.form.caption }} </p>
+                                    <p>类型:{{ item.form.tp }} <a class="{{ item.option_class }} addBtntp"><span class="glyphicon glyphicon-plus"></span>添加选项</a></p>
+                                    <ul class="option">
+                                        {% for v in item.options %}
+                                            <li id="{{ v.obj.id }}">{{ v.form }}<span class="glyphicon glyphicon-remove removeBtn"></span></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ol>
+{#                </div>#}
             </div>
         </div>
     </div>
 </div>
 
+<script src="/static/jquery.cookie.js"></script>
 <script>
+    // 左侧菜单
     $(".right_menu").mouseover(function () {
         $(this).next().slideDown(100)
     }).parent().mouseleave(function () {
         $(this).children(".right_menu_bn").slideUp(100)
     });
 
+    // 添加问题
     $(".addBtn").click(function () {
-        alert(111);
-        str = '<div class="row" style="margin:0 auto"><div class="row"><div>问题:</div></div><div class="row"><div class="col-md-1 col-md-offset-1">问题：</div><div class="col-md-8"><textarea name="" id="" cols="100" rows="2"></textarea></div><div class="col-md-1"><span class="glyphicon glyphicon-remove"></span></div></div><div class="row"><div class="col-md-1 col-md-offset-1">类型：</div><div class="col-md-9">   </div></div></div>';
-        $(".newadd").append(str)
+        var str = $('ol>li:last').clone();
+        str.find("input").val("");
+        msg = str.find("div").attr("pk")*1+1;
+        str.find("div").attr("pk",msg);
+        alert(str.find("input").val());
+        $("ol").append(str)
     });
-    
+    // 添加单选项
+    $(".addBtntp").click(function () {
+        var the = $(this).parent().next();
+        var str = '<li id="'+(the.find("li:last").attr("id")*1+1)+'"><tr><th><label for="id_name">内容:</label></th><td><input type="text" name="name" value="" maxlength="32" required id="id_name" /></td></tr> <tr><th><label for="id_score">分值:</label></th><td><input type="number" name="score" value="" required id="id_score" /></td></tr><span class="glyphicon glyphicon-remove removeBtn"></span></li>';
+        the.append(str)
+    });
+    // 删除
     $(".content").on("click",".removeBtn",function () {
-        $(".removeBtn").parent.parent.remove()
-    })
+        $(this).parent().remove()
+    });
+    // 类型转变
+    $(".content").on("change","select",function () {
+        if ($(this).val()==2) {
+            $(this).next().removeClass("hide");
+            str = '<ul class="option"></ul>';
+            $(this).next().after(str)
+        }
+        else {
+            $(this).next().addClass("hide");
+            $(this).parent().next().empty()
+        }
+    });
+
+    // 保存
+    $(document).ready(function () {
+        $(".saveBtn").click(function () {
+            var pList = [];
+            $.each($('ol>li'),function(){
+                var the = $(this).find('div');
+                pList.push({
+                    'pid': the.attr("pk"), 'caption': the.find(':text').val(), 'type': the.find('#id_tp').val(), 'options': []
+                });
+                if (the.find('#id_tp').val()=="2"){
+                    $.each(the.find("ul>li"),function() {
+                        num = parseInt(the.attr("pk"))-1;
+                        pList[num]['options'].push({'id': $(this).attr("id"), 'title': $(this).find("#id_name").val(), val: $(this).find("#id_score").val()})
+                    });
+                }
+            });
+            $.ajax({
+                url : "/question_save/{{ id }}",
+                type : "POST",
+                headers : {"X-CSRFToken":$.cookie('csrftoken')} ,
+                data : JSON.stringify(pList),
+                contentType : 'application/json',
+                success : function (data) {
+
+                }
+            })
+        })
+    });
+
+
 </script>
 </body>
 </html>

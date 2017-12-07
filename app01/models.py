@@ -46,8 +46,8 @@ class Option(models.Model):
     """
     单选题的选项
     """
-    name = models.CharField(verbose_name='选项名称',max_length=32)
-    score = models.IntegerField(verbose_name='选项对应的分值')
+    name = models.CharField(verbose_name='内容',max_length=32)
+    score = models.IntegerField(verbose_name='分值')
     qs = models.ForeignKey(verbose_name='所属问题',to=Question)
 
 class Answer(models.Model):
